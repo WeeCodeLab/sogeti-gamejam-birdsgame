@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
         _input = new Input();
         _input.Enable();
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        RegisterInput();
     }
 
     // Update is called once per frame
@@ -25,16 +27,16 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
     }
-
+    private void RegisterInput()
+    {
+        _input.Player.Jump.started += _ => Jump();
+        _input.Player.Interact.started += _ => Interact();
+    }
+    
     private void Move()
     {
         var moveDirection = _input.Player.Move.ReadValue<float>();
         _rigidbody2D.velocity = new Vector2(moveDirection * _movementSpeed, _rigidbody2D.velocity.y);
-    }
-
-    private void RegisterInput()
-    {
-        _input.Player.Jump.started += _ => Jump();
     }
 
     private void Jump()
@@ -42,6 +44,12 @@ public class PlayerMovement : MonoBehaviour
         if (!IsGrounded()) return;
 
         _rigidbody2D.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+    }
+    private void Interact()
+    {
+        var layerId = LayerMask.NameToLayer("Interactable");
+        var interactable = Physics2D.OverlapCircle(transform.position, 2f, ~layerId).GetComponent<IInteractable>();
+        interactable.Interact();
     }
     
     private bool IsGrounded() //+
@@ -60,4 +68,11 @@ public class PlayerMovement : MonoBehaviour
     {
         _input?.Disable();
     }
+    
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, 2f);
+    }
+#endif
 }
