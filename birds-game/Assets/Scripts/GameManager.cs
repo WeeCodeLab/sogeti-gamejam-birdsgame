@@ -1,24 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Manages game state between scenes
-/// </summary>
-public class GameManager
+namespace birds_game.Assets.Scripts.Characters
 {
-    public static GameManager Instance { get; private set;}
-    public static void Init()
+    /// <summary>
+    /// Manages game state between scenes
+    /// </summary>
+    public class GameManager
     {
-        Instance = new GameManager();
-    }
-    public void GetDamaged()
-    {
+        public static GameManager Instance { get; private set;}
+        public static void Init()
+        {
+            if(Instance != null) return;
+            Instance = new GameManager();
+        }
+        private GameManager()
+        {
+            _characters = new Queue<BirdCharacter>(3);
+            _characters.Enqueue(new Seagull());
+            _healthPoints = MaxHealthPoints;
+        }
+        //Active character will be FirstOrDefault() where health is > 0
+        private Queue<BirdCharacter> _characters;
+        private int _healthPoints;
+        private const int MaxHealthPoints = 3;
+        public void TakeDamage(int amount = 1)
+        {
+            _healthPoints -= amount;
+            if(_healthPoints > 0) return;
 
-    }
+            ResetCurrentLevel();
+        }
+        public BirdCharacter SwapBird()
+        {
+            var currentCharacter = _characters.Dequeue();
+            _characters.Enqueue(currentCharacter);
+            return GetCurrentBirdCharacter();
+        }
+        public BirdCharacter GetCurrentBirdCharacter()
+        {
+            return _characters.Peek();
+        }
+        public void AddBird(BirdCharacter newCharacter)
+        {
+            if(_characters.Contains(newCharacter)) return;
+            _characters.Enqueue(newCharacter);
+        }
+        private void ResetCurrentLevel()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        public void EatFood(int amount = 1)
+        {
+            if(_healthPoints >= MaxHealthPoints) return;
 
-    private void EndGame()
-    {
+            _healthPoints += amount;
+        }
 
+        public void GetDamaged()
+        {
+
+        }
+
+        private void EndGame()
+        {
+
+        }
     }
 }
