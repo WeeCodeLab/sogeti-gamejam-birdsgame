@@ -1,22 +1,20 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using birds_game.Assets.Scripts.Characters;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace birds_game.Assets.Scripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerInputController : MonoBehaviour
     {
-        [SerializeField] private float _movementSpeed;
-        [SerializeField] private float _jumpPower;
-
+        private BirdCharacter _character;
+        private float _walkingSpeed;
         private Input _input;
         private Rigidbody2D _rigidbody2D;
 
         private void Start()
         {
+            _character = GameManager.Instance.GetCurrentBirdCharacter();
+            _walkingSpeed = _character.WalkingSpeed;
             _input = new Input();
             _input.Enable();
             _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -32,21 +30,30 @@ namespace birds_game.Assets.Scripts
         {
             _input.Player.Jump.started += _ => Jump();
             _input.Player.Interact.started += _ => Interact();
-            _input.Player.Crawl.started += _ => _movementSpeed = 2.5f;
-            _input.Player.Crawl.canceled += _ => _movementSpeed = 5f;
+            _input.Player.Crawl.started += _ => 
+            {
+                _walkingSpeed = _character.WalkingSpeed / 2; 
+                //TODO: change current to crawling animation
+            };
+            _input.Player.Crawl.canceled += _ => 
+            {
+                _walkingSpeed = _character.WalkingSpeed;
+                //TODO: change current animation to normal walking
+            };
+            //TODO: add bird character swapping here and setting of _walkingSpeed
         }
 
         private void Move()
         {
             var moveDirection = _input.Player.Move.ReadValue<float>();
-            _rigidbody2D.velocity = new Vector2(moveDirection * _movementSpeed, _rigidbody2D.velocity.y);
+            _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
         }
 
         private void Jump()
         {
             if (!IsGrounded()) return;
 
-            _rigidbody2D.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+            _rigidbody2D.AddForce(Vector2.up * _character.JumpPower, ForceMode2D.Impulse);
         }
         private void Interact()
         {
