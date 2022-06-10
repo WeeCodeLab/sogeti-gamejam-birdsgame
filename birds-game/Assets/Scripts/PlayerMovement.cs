@@ -31,6 +31,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _input.Player.Jump.started += _ => Jump();
         _input.Player.Interact.started += _ => Interact();
+        _input.Player.Crawl.started += _ => _movementSpeed = 2.5f;
+        _input.Player.Crawl.canceled += _ => _movementSpeed = 5f;
     }
     
     private void Move()
