@@ -6,6 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/LevelOne.unity
+    path: Assets/Scenes/Intro.unity
+    guid: 4a4a7bfc212d50f4d806b15a5f440ef3
+  - enabled: 1
+    path: Assets/Scenes/Beach.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/City.unity
+    guid: dc77d4ed7f11f284cb0f25ef40b04753
+  - enabled: 1
+    path: Assets/Scenes/Arctic.unity
+    guid: fe8944c762d0e20439e467cb4dd7e8c2
+  - enabled: 1
+    path: Assets/Scenes/ScoreBoard.unity
+    guid: ad6d2e72bfaa105438b3d290b3c0cabf
+  - enabled: 1
+    path: Assets/Scenes/Outro.unity
+    guid: 24da75cb9d618544fb6f034b83c30441
   m_configObjects: {}
