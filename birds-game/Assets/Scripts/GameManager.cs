@@ -1,10 +1,11 @@
+using birds_game.Assets.Scripts.Characters;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace birds_game.Assets.Scripts.Characters
+namespace birds_game.Assets.Scripts
 {
     /// <summary>
     /// Manages game state between scenes
@@ -22,9 +23,11 @@ namespace birds_game.Assets.Scripts.Characters
             _characters = new Queue<BirdCharacter>(3);
             _characters.Enqueue(new Seagull());
             _healthPoints = MaxHealthPoints;
+            _currentScene = GameScene.Intro;
         }
         //Active character will be FirstOrDefault() where health is > 0
         private Queue<BirdCharacter> _characters;
+        private GameScene _currentScene;
         private int _healthPoints;
         private const int MaxHealthPoints = 3;
         public void TakeDamage(int amount = 1)
@@ -51,7 +54,7 @@ namespace birds_game.Assets.Scripts.Characters
         }
         private void ResetCurrentLevel()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene((int)_currentScene);
         }
         public void EatFood(int amount = 1)
         {
@@ -62,10 +65,16 @@ namespace birds_game.Assets.Scripts.Characters
 
         public void GetDamaged()
         {
-
+            _healthPoints--;
+            if(_healthPoints <= 0) ResetCurrentLevel();
         }
 
-        private void EndGame()
+        private void FinishLevel()
+        {
+            var nextLevelIndex = (int)_currentScene++;
+            SceneManager.LoadScene(nextLevelIndex);
+        }
+        private void FinishGame()
         {
 
         }

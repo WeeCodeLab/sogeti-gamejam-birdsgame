@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-namespace birds_game.Assets.Scripts.Characters
+namespace birds_game.Assets.Scripts
 {
     public class Initializer : MonoBehaviour
     {
@@ -22,16 +22,16 @@ namespace birds_game.Assets.Scripts.Characters
         IEnumerator PlayIntro()
         {
             yield return new WaitForSeconds(5);
-            
+
             var asyncLoad = SceneManager.LoadSceneAsync("Beach");
             // Wait until the asynchronous scene fully loads
             while (!asyncLoad.isDone)
             {
                 yield return null;
             }
-    
+
         }
-    
+
         // Update is called once per frame
         void Update()
         {     

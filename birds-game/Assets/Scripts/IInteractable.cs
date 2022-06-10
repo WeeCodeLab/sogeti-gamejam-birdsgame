@@ -1,4 +1,4 @@
-﻿namespace birds_game.Assets.Scripts.Characters
+﻿namespace birds_game.Assets.Scripts
 {
     public interface IInteractable
     {
