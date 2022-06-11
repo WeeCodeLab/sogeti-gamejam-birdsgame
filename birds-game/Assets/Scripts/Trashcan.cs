@@ -45,7 +45,7 @@ public class Trashcan : MonoBehaviour
     {
         var birdLayer = LayerMask.NameToLayer("Player");
         
-        if (collision.collider.gameObject.layer == ~birdLayer && !_kicked)
+        if (collision.collider.gameObject.layer == birdLayer && !_kicked)
         {
             var birdPosition = collision.collider.gameObject.transform.position;
             var force = (birdPosition + transform.position) * 2f;
