@@ -24,6 +24,7 @@ namespace birds_game.Assets.Scripts
             _characters.Enqueue(new Seagull());
             _healthPoints = MaxHealthPoints;
             _currentScene = GameScene.Intro;
+            Application.targetFrameRate = 60;
         }
         //Active character will be FirstOrDefault() where health is > 0
         private Queue<BirdCharacter> _characters;
