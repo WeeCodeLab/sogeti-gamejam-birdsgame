@@ -10,14 +10,18 @@ namespace birds_game.Assets.Scripts
         private float _walkingSpeed;
         private Input _input;
         private Rigidbody2D _rigidbody2D;
+        private Animator _animator;
+        private bool _facingRight = true;
 
         private void Start()
         {
+            GameManager.Init();
             _character = GameManager.Instance.GetCurrentBirdCharacter();
             _walkingSpeed = _character.WalkingSpeed;
             _input = new Input();
             _input.Enable();
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _animator = GetComponentInChildren<Animator>();
             RegisterInput();
         }
 
@@ -46,7 +50,22 @@ namespace birds_game.Assets.Scripts
         private void Move()
         {
             var moveDirection = _input.Player.Move.ReadValue<float>();
+            if(moveDirection == 1 && !_facingRight)
+            {
+                Flip();
+            }
+            else if(moveDirection == -1 && _facingRight)
+            {
+                Flip();
+            }
             _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
+        }
+        private void Flip()
+        {
+            _facingRight = !_facingRight;
+            var currentScale = transform.localScale;
+            currentScale.x  *= -1;
+            transform.localScale = currentScale;
         }
 
         private void Jump()
