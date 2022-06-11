@@ -14,6 +14,7 @@ namespace birds_game.Assets.Scripts
         private bool _facingRight = true;
         private bool _isGrounded = true;
         private const float DEFAULT_SCALE_VALUE = 0.5f;
+        private const int JUMP_ANIM_SLOW_COEFF = 10;
 
         private void Start()
         {
@@ -60,19 +61,30 @@ namespace birds_game.Assets.Scripts
             {
                 Flip(-DEFAULT_SCALE_VALUE);
             }
+
+            SetAnimations(moveDirection);
+            _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
+        }
+        private void SetAnimations(float moveDirection)
+        {            
             if(_isGrounded)
             {
-                if(moveDirection != 0)
+                if(moveDirection == 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Idle"))
                 {
-                    _animator.Play("Seagull_Walk");       
-                    _animator.speed = _character.WalkingSpeed;
-                }
-                else
-                {
+                    _animator.speed = 1f;
                     _animator.Play("Seagull_Idle");
                 }
+                else if(moveDirection != 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Walk"))
+                {
+                    _animator.speed = _character.WalkingSpeed;
+                    _animator.Play("Seagull_Walk");
+                }
             }
-            _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
+            else
+            {
+                _animator.speed = _character.JumpPower / JUMP_ANIM_SLOW_COEFF;
+                _animator.Play("Seagull_Jump");
+            }
         }
         private void Flip(float scale)
         {
@@ -94,7 +106,6 @@ namespace birds_game.Assets.Scripts
         {
             if (!_isGrounded) return;
 
-            _animator.Play("Seagull_Jump");
             _rigidbody2D.AddForce(Vector2.up * _character.JumpPower, ForceMode2D.Impulse);
         }
         private void Interact()
