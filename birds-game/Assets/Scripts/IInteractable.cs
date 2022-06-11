@@ -1,4 +1,4 @@
-﻿namespace DefaultNamespace
+﻿namespace birds_game.Assets.Scripts
 {
     public interface IInteractable
     {
