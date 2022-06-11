@@ -13,6 +13,7 @@ namespace birds_game.Assets.Scripts
         private Animator _animator;
         private bool _facingRight = true;
         private bool _isGrounded = true;
+        private bool _isCrawling = false;
         private const float DEFAULT_SCALE_VALUE = 0.5f;
         private const int JUMP_ANIM_SLOW_COEFF = 10;
 
@@ -40,12 +41,12 @@ namespace birds_game.Assets.Scripts
             _input.Player.Crawl.started += _ => 
             {
                 _walkingSpeed = _character.WalkingSpeed / 2; 
-                //TODO: change current to crawling animation
+                _isCrawling = true;
             };
             _input.Player.Crawl.canceled += _ => 
             {
                 _walkingSpeed = _character.WalkingSpeed;
-                //TODO: change current animation to normal walking
+                _isCrawling = false;
             };
             //TODO: add bird character swapping here and setting of _walkingSpeed
         }
@@ -69,14 +70,19 @@ namespace birds_game.Assets.Scripts
         {            
             if(_isGrounded)
             {
-                if(moveDirection == 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Idle"))
+                if(_isCrawling)
+                {
+                    _animator.speed = _walkingSpeed;
+                    _animator.Play("Seagull_Crouch");
+                }
+                else if(moveDirection == 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Idle"))
                 {
                     _animator.speed = 1f;
                     _animator.Play("Seagull_Idle");
                 }
                 else if(moveDirection != 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Walk"))
                 {
-                    _animator.speed = _character.WalkingSpeed;
+                    _animator.speed = _walkingSpeed;
                     _animator.Play("Seagull_Walk");
                 }
             }
@@ -106,6 +112,7 @@ namespace birds_game.Assets.Scripts
         {
             if (!_isGrounded) return;
 
+            _isCrawling = false;
             _rigidbody2D.AddForce(Vector2.up * _character.JumpPower, ForceMode2D.Impulse);
         }
         private void Interact()
