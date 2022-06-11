@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 6415132692726425256}
   - component: {fileID: -2337289808129841141}
   - component: {fileID: 8766428317979357247}
+  - component: {fileID: 477216873726018801}
   m_Layer: 0
   m_Name: Trashcan
   m_TagString: Untagged
@@ -219,7 +220,11 @@ MonoBehaviour:
   _minSpawnTime: 2
   _spawnTimer: 5
   _trashPrefabs:
-  - {fileID: 2177156747385529262, guid: 5666a24061764ec44868f2dbb0e5dc01, type: 3}
+  - {fileID: 2177156747385529262, guid: 380243351ce1abc418cefb3fc277350d, type: 3}
+  - {fileID: 2177156747385529262, guid: c0710868fb1af154996f77b52026de63, type: 3}
+  - {fileID: 2177156747385529262, guid: e32422777cc9c6849b57d5078683ba59, type: 3}
+  - {fileID: 2177156747385529262, guid: f5decef0ea6acd54eb5eea897353bf63, type: 3}
+  - {fileID: 2177156747385529262, guid: 87fdb6f39b313dd40b516cb7179cf473, type: 3}
   _spawnPosition: {fileID: 8251240177795061909}
 --- !u!60 &8766428317979357247
 PolygonCollider2D:
@@ -269,3 +274,24 @@ PolygonCollider2D:
       - {x: -0.2635837, y: -0.58567953}
       - {x: -0.25143063, y: -0.585}
       - {x: -0.035, y: -0.585}
+--- !u!50 &477216873726018801
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8647930347857737335}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
