@@ -12,7 +12,7 @@ namespace birds_game.Assets.Scripts
         private Rigidbody2D _rigidbody2D;
         private Animator _animator;
         private bool _facingRight = true;
-        private const float DEFAULT_SCALE_VALUE = 0.75f;
+        private const float DEFAULT_SCALE_VALUE = 0.5f;
 
         private void Start()
         {
@@ -23,6 +23,7 @@ namespace birds_game.Assets.Scripts
             _input.Enable();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
+            _animator.speed += _character.WalkingSpeed;
             RegisterInput();
         }
 
