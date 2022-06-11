@@ -12,7 +12,10 @@ namespace birds_game.Assets.Scripts
         private Rigidbody2D _rigidbody2D;
         private Animator _animator;
         private bool _facingRight = true;
+        private bool _isGrounded = true;
+        private bool _isCrawling = false;
         private const float DEFAULT_SCALE_VALUE = 0.5f;
+        private const int JUMP_ANIM_SLOW_COEFF = 10;
 
         private void Start()
         {
@@ -23,7 +26,6 @@ namespace birds_game.Assets.Scripts
             _input.Enable();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
-            _animator.speed += _character.WalkingSpeed;
             RegisterInput();
         }
 
@@ -39,12 +41,12 @@ namespace birds_game.Assets.Scripts
             _input.Player.Crawl.started += _ => 
             {
                 _walkingSpeed = _character.WalkingSpeed / 2; 
-                //TODO: change current to crawling animation
+                _isCrawling = true;
             };
             _input.Player.Crawl.canceled += _ => 
             {
                 _walkingSpeed = _character.WalkingSpeed;
-                //TODO: change current animation to normal walking
+                _isCrawling = false;
             };
             //TODO: add bird character swapping here and setting of _walkingSpeed
         }
@@ -60,15 +62,35 @@ namespace birds_game.Assets.Scripts
             {
                 Flip(-DEFAULT_SCALE_VALUE);
             }
-            if(moveDirection != 0)
+
+            SetAnimations(moveDirection);
+            _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
+        }
+        private void SetAnimations(float moveDirection)
+        {            
+            if(_isGrounded)
             {
-                _animator.Play("Seagull_Walk");       
+                if(_isCrawling)
+                {
+                    _animator.speed = _walkingSpeed;
+                    _animator.Play("Seagull_Crouch");
+                }
+                else if(moveDirection == 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Idle"))
+                {
+                    _animator.speed = 1f;
+                    _animator.Play("Seagull_Idle");
+                }
+                else if(moveDirection != 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Walk"))
+                {
+                    _animator.speed = _walkingSpeed;
+                    _animator.Play("Seagull_Walk");
+                }
             }
             else
             {
-                _animator.Play("Seagull_Idle");
+                _animator.speed = _character.JumpPower / JUMP_ANIM_SLOW_COEFF;
+                _animator.Play("Seagull_Jump");
             }
-            _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
         }
         private void Flip(float scale)
         {
@@ -77,11 +99,20 @@ namespace birds_game.Assets.Scripts
             currentScale.x  = scale;
             transform.localScale = currentScale;
         }
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            _isGrounded = collision.collider.gameObject.layer == LayerMask.NameToLayer("World");
+        }
+        void OnCollisionExit2D(Collision2D collision)
+        {
+            _isGrounded = collision.collider.gameObject.layer != LayerMask.NameToLayer("World");
+        }
 
         private void Jump()
         {
-            if (!IsGrounded()) return;
+            if (!_isGrounded) return;
 
+            _isCrawling = false;
             _rigidbody2D.AddForce(Vector2.up * _character.JumpPower, ForceMode2D.Impulse);
         }
         private void Interact()
@@ -90,14 +121,6 @@ namespace birds_game.Assets.Scripts
             var interactable = Physics2D.OverlapCircle(transform.position, 2f, ~layerId).GetComponent<IInteractable>();
             interactable.Interact();
         }
-
-        private bool IsGrounded() //+
-        {
-            var layerId = LayerMask.NameToLayer("World");
-            var groundCheck = Physics2D.Raycast(transform.position, Vector2.down, 0.7f, ~layerId);
-            return groundCheck.collider != null;
-        }
-
         private void OnEnable()
         {
             _input?.Enable();
