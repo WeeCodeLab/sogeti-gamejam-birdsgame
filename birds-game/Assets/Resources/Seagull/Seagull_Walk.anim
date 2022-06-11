@@ -498,7 +498,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: R_Leg_Ik/R_Leg_Ik_Target (1)
+    path: R_Leg_Ik
   - curve:
       serializedVersion: 2
       m_Curve:
