@@ -12,6 +12,7 @@ namespace birds_game.Assets.Scripts
         private Rigidbody2D _rigidbody2D;
         private Animator _animator;
         private bool _facingRight = true;
+        private const float DEFAULT_SCALE_VALUE = 0.75f;
 
         private void Start()
         {
@@ -52,19 +53,27 @@ namespace birds_game.Assets.Scripts
             var moveDirection = _input.Player.Move.ReadValue<float>();
             if(moveDirection == 1 && !_facingRight)
             {
-                Flip();
+                Flip(DEFAULT_SCALE_VALUE);
             }
             else if(moveDirection == -1 && _facingRight)
             {
-                Flip();
+                Flip(-DEFAULT_SCALE_VALUE);
+            }
+            if(moveDirection != 0)
+            {
+                _animator.Play("Seagull_Walk");       
+            }
+            else
+            {
+                _animator.Play("Seagull_Idle");
             }
             _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
         }
-        private void Flip()
+        private void Flip(float scale)
         {
             _facingRight = !_facingRight;
             var currentScale = transform.localScale;
-            currentScale.x  *= -1;
+            currentScale.x  = scale;
             transform.localScale = currentScale;
         }
 
