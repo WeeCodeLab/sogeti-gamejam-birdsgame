@@ -12,6 +12,7 @@ namespace birds_game.Assets.Scripts
         private Rigidbody2D _rigidbody2D;
         private Animator _animator;
         private bool _facingRight = true;
+        private bool _isGrounded = true;
         private const float DEFAULT_SCALE_VALUE = 0.5f;
 
         private void Start()
@@ -23,7 +24,6 @@ namespace birds_game.Assets.Scripts
             _input.Enable();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
-            _animator.speed += _character.WalkingSpeed;
             RegisterInput();
         }
 
@@ -60,13 +60,17 @@ namespace birds_game.Assets.Scripts
             {
                 Flip(-DEFAULT_SCALE_VALUE);
             }
-            if(moveDirection != 0)
+            if(_isGrounded)
             {
-                _animator.Play("Seagull_Walk");       
-            }
-            else
-            {
-                _animator.Play("Seagull_Idle");
+                if(moveDirection != 0)
+                {
+                    _animator.Play("Seagull_Walk");       
+                    _animator.speed = _character.WalkingSpeed;
+                }
+                else
+                {
+                    _animator.Play("Seagull_Idle");
+                }
             }
             _rigidbody2D.velocity = new Vector2(moveDirection * _walkingSpeed, _rigidbody2D.velocity.y);
         }
@@ -77,11 +81,20 @@ namespace birds_game.Assets.Scripts
             currentScale.x  = scale;
             transform.localScale = currentScale;
         }
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            _isGrounded = collision.collider.gameObject.layer == LayerMask.NameToLayer("World");
+        }
+        void OnCollisionExit2D(Collision2D collision)
+        {
+            _isGrounded = collision.collider.gameObject.layer != LayerMask.NameToLayer("World");
+        }
 
         private void Jump()
         {
-            if (!IsGrounded()) return;
+            if (!_isGrounded) return;
 
+            _animator.Play("Seagull_Jump");
             _rigidbody2D.AddForce(Vector2.up * _character.JumpPower, ForceMode2D.Impulse);
         }
         private void Interact()
@@ -90,14 +103,6 @@ namespace birds_game.Assets.Scripts
             var interactable = Physics2D.OverlapCircle(transform.position, 2f, ~layerId).GetComponent<IInteractable>();
             interactable.Interact();
         }
-
-        private bool IsGrounded() //+
-        {
-            var layerId = LayerMask.NameToLayer("World");
-            var groundCheck = Physics2D.Raycast(transform.position, Vector2.down, 0.7f, ~layerId);
-            return groundCheck.collider != null;
-        }
-
         private void OnEnable()
         {
             _input?.Enable();
