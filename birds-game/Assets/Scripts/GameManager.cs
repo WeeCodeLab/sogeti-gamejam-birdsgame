@@ -13,6 +13,7 @@ namespace birds_game.Assets.Scripts
     public class GameManager
     {
         public static GameManager Instance { get; private set;}
+        private GameUi _gameUi;
         public static void Init()
         {
             if(Instance != null) return;
@@ -25,6 +26,9 @@ namespace birds_game.Assets.Scripts
             _healthPoints = MaxHealthPoints;
             _currentScene = GameScene.Intro;
             Application.targetFrameRate = 60;
+
+            var gameUiPrefab = Resources.Load<GameUi>("Prefabs/GameUi");
+            _gameUi = Object.Instantiate(gameUiPrefab);
         }
         //Active character will be FirstOrDefault() where health is > 0
         private Queue<BirdCharacter> _characters;
@@ -34,6 +38,7 @@ namespace birds_game.Assets.Scripts
         public void TakeDamage(int amount = 1)
         {
             _healthPoints -= amount;
+            _gameUi.HealthUi.OnTakeDamage();
             if(_healthPoints > 0) return;
 
             ResetCurrentLevel();
@@ -62,6 +67,7 @@ namespace birds_game.Assets.Scripts
             if(_healthPoints >= MaxHealthPoints) return;
 
             _healthPoints += amount;
+            _gameUi.HealthUi.OnRegenerateHealth();
         }
 
         public void GetDamaged()
