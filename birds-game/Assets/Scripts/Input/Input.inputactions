@@ -55,7 +55,7 @@
                 {
                     "name": "",
                     "id": "6175aa12-8011-472d-8036-07cc42e326a9",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
@@ -220,7 +220,7 @@
                 {
                     "name": "",
                     "id": "b0fa91cf-c3a6-4b4f-acd1-e0bf9ed61191",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
