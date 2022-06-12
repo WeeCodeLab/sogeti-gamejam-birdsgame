@@ -2,6 +2,7 @@
 {
     public interface IInteractable
     {
+        const float INTERACTION_RADIUS = 2f;
         void Interact();
     }
 }

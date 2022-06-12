@@ -16,6 +16,7 @@ namespace birds_game.Assets.Scripts
         private bool _isCrawling = false;
         private const float DEFAULT_SCALE_VALUE = 0.5f;
         private const int JUMP_ANIM_SLOW_COEFF = 10;
+        private const float NORMAL_ANIM_SPEED = 1f;
 
         private void Start()
         {
@@ -75,11 +76,13 @@ namespace birds_game.Assets.Scripts
                     _animator.speed = _walkingSpeed;
                     _animator.Play("Seagull_Crouch");
                 }
+                //if moveDirection is 0, we're standing still
                 else if(moveDirection == 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Idle"))
                 {
-                    _animator.speed = 1f;
+                    _animator.speed = NORMAL_ANIM_SPEED;
                     _animator.Play("Seagull_Idle");
                 }
+                //if moveDirection== -1 we're moving left, and with moveDirection == 1 we're moving right
                 else if(moveDirection != 0 && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Seagull_Walk"))
                 {
                     _animator.speed = _walkingSpeed;
@@ -118,7 +121,7 @@ namespace birds_game.Assets.Scripts
         private void Interact()
         {
             var layerId = LayerMask.NameToLayer("Interactable");
-            var interactable = Physics2D.OverlapCircle(transform.position, 2f, ~layerId).GetComponent<IInteractable>();
+            var interactable = Physics2D.OverlapCircle(transform.position, IInteractable.INTERACTION_RADIUS, ~layerId).GetComponent<IInteractable>();
             interactable.Interact();
         }
         private void OnEnable()
