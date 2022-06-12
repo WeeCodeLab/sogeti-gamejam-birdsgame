@@ -1,3 +1,4 @@
+using birds_game.Assets.Scripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ public class Trashcan : MonoBehaviour
     [SerializeField] private float _spawnTimer = 5f;
     [SerializeField] private List<GameObject> _trashPrefabs;
     [SerializeField] private Transform _spawnPosition;
+    [SerializeField] private CircleCollider2D _spawnRange;
 
     private Rigidbody2D _rigidbody2D;
 
     private bool _kicked = false;
+    private bool _isInSpawnRange = false;
     
     private float _currentTimer;
     void Start()
@@ -30,7 +33,7 @@ public class Trashcan : MonoBehaviour
     {
         _spawnTimer -= Time.deltaTime;
 
-        if (_spawnTimer <= 0)
+        if (_spawnTimer <= 0 && _isInSpawnRange && !_kicked)
         {
             var prefabIndex = Random.Range(0, _trashPrefabs.Count);
             var trash = Instantiate(_trashPrefabs[prefabIndex], _spawnPosition.position, Quaternion.identity);
@@ -41,16 +44,34 @@ public class Trashcan : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        var birdLayer = LayerMask.NameToLayer("Player");
+        
+        if (col.gameObject.layer == birdLayer)
+        {
+            _isInSpawnRange = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        var birdLayer = LayerMask.NameToLayer("Player");
+        
+        if (col.gameObject.layer == birdLayer)
+        {
+            _isInSpawnRange = false;
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         var birdLayer = LayerMask.NameToLayer("Player");
         
         if (collision.collider.gameObject.layer == birdLayer && !_kicked)
         {
-            var birdPosition = collision.collider.gameObject.transform.position;
-            var force = (birdPosition + transform.position) * 2f;
-            _rigidbody2D.AddForce(force, ForceMode2D.Impulse);
-            //TODO: Damage bird    
+            _kicked = true;
+            GameManager.Instance.TakeDamage();
         };
     }
 }

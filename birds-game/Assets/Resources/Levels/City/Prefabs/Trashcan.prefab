@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: -2337289808129841141}
   - component: {fileID: 8766428317979357247}
   - component: {fileID: 477216873726018801}
+  - component: {fileID: 6086867826153051844}
   m_Layer: 0
   m_Name: Trashcan
   m_TagString: Untagged
@@ -226,6 +227,7 @@ MonoBehaviour:
   - {fileID: 2177156747385529262, guid: f5decef0ea6acd54eb5eea897353bf63, type: 3}
   - {fileID: 2177156747385529262, guid: 87fdb6f39b313dd40b516cb7179cf473, type: 3}
   _spawnPosition: {fileID: 8251240177795061909}
+  _spawnRange: {fileID: 6086867826153051844}
 --- !u!60 &8766428317979357247
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -295,3 +297,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!58 &6086867826153051844
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8647930347857737335}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 12
