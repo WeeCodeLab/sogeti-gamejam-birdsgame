@@ -13,10 +13,13 @@ namespace birds_game.Assets.Scripts
         private Animator _animator;
         private bool _facingRight = true;
         private bool _isGrounded = true;
+        private bool _isFlying = false;
         private bool _isCrawling = false;
         private const float DEFAULT_SCALE_VALUE = 0.5f;
         private const int JUMP_ANIM_SLOW_COEFF = 10;
         private const float NORMAL_ANIM_SPEED = 1f;
+        private GameObject _seagullGrounded;
+        private GameObject _seagullFliying;
 
         private void Start()
         {
@@ -28,6 +31,8 @@ namespace birds_game.Assets.Scripts
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
             RegisterInput();
+            _seagullFliying = transform.Find("Seagull_air").gameObject;
+            _seagullGrounded = transform.Find("Seagull_ground").gameObject;
         }
 
         // Update is called once per frame
@@ -49,7 +54,6 @@ namespace birds_game.Assets.Scripts
                 _walkingSpeed = _character.WalkingSpeed;
                 _isCrawling = false;
             };
-            //TODO: add bird character swapping here and setting of _walkingSpeed
         }
 
         private void Move()
@@ -105,17 +109,39 @@ namespace birds_game.Assets.Scripts
         void OnCollisionEnter2D(Collision2D collision)
         {
             _isGrounded = collision.collider.gameObject.layer == LayerMask.NameToLayer("World");
+            if(_isGrounded)
+            {
+                _isFlying = false;
+                _seagullGrounded.SetActive(true);
+                _seagullFliying.SetActive(false);
+                _rigidbody2D.gravityScale = 1f;
+            }
         }
         void OnCollisionExit2D(Collision2D collision)
         {
             _isGrounded = collision.collider.gameObject.layer != LayerMask.NameToLayer("World");
         }
-
+        private void HandleFlight()
+        {
+            if(!_isFlying)
+            {
+                _isFlying = true;
+                _isGrounded = false;
+                _seagullGrounded.SetActive(false);
+                _seagullFliying.SetActive(true);
+                _rigidbody2D.gravityScale = 0.5f;
+            }            
+        }
         private void Jump()
         {
-            if (!_isGrounded) return;
-
+            if(!_isGrounded)
+            {
+                HandleFlight();
+            }
             _isCrawling = false;
+            _isGrounded = false;
+            _isFlying = false;
+            
             _rigidbody2D.AddForce(Vector2.up * _character.JumpPower, ForceMode2D.Impulse);
         }
         private void Interact()

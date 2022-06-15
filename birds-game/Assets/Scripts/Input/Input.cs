@@ -71,15 +71,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""InitFlight"",
-                    ""type"": ""Button"",
-                    ""id"": ""c846a33d-3d76-4e0b-9474-f8c507787bc7"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -101,6 +92,28 @@ public partial class @Input : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1fc70ef-61fa-47c1-904e-87f695d7717b"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0da9ffdc-2835-48a5-af67-fa0e184f3761"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -302,28 +315,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
                     ""action"": ""Crawl"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""04695ffd-9fd8-4e8a-8e08-793cec82cf8d"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""InitFlight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""647af140-20f9-40e6-9b37-e6c8da8da726"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""InitFlight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -348,7 +339,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
         m_Player_Hide = m_Player.FindAction("Hide", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Crawl = m_Player.FindAction("Crawl", throwIfNotFound: true);
-        m_Player_InitFlight = m_Player.FindAction("InitFlight", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -413,7 +403,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Hide;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Crawl;
-    private readonly InputAction m_Player_InitFlight;
     public struct PlayerActions
     {
         private @Input m_Wrapper;
@@ -423,7 +412,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
         public InputAction @Hide => m_Wrapper.m_Player_Hide;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Crawl => m_Wrapper.m_Player_Crawl;
-        public InputAction @InitFlight => m_Wrapper.m_Player_InitFlight;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -448,9 +436,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
                 @Crawl.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrawl;
                 @Crawl.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrawl;
                 @Crawl.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrawl;
-                @InitFlight.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitFlight;
-                @InitFlight.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitFlight;
-                @InitFlight.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitFlight;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -470,9 +455,6 @@ public partial class @Input : IInputActionCollection2, IDisposable
                 @Crawl.started += instance.OnCrawl;
                 @Crawl.performed += instance.OnCrawl;
                 @Crawl.canceled += instance.OnCrawl;
-                @InitFlight.started += instance.OnInitFlight;
-                @InitFlight.performed += instance.OnInitFlight;
-                @InitFlight.canceled += instance.OnInitFlight;
             }
         }
     }
@@ -502,6 +484,5 @@ public partial class @Input : IInputActionCollection2, IDisposable
         void OnHide(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnCrawl(InputAction.CallbackContext context);
-        void OnInitFlight(InputAction.CallbackContext context);
     }
 }
